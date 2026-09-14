@@ -1,0 +1,34 @@
+class Solution {
+    public int leastInterval(char[] tasks, int n) {
+        HashMap<Character, Integer> map = new HashMap<>();
+        for (char ch : tasks) {
+            map.put(ch, map.getOrDefault(ch, 0) + 1);
+        }
+
+        PriorityQueue<Integer> heap = new PriorityQueue<>(Collections.reverseOrder());
+        for (int i : map.values()) {
+            heap.offer(i);
+        }
+
+        Deque<int[]> q = new ArrayDeque<>();
+        int time = 0;
+
+        while (!q.isEmpty() || !heap.isEmpty()) {
+            time++;
+            if (!heap.isEmpty()) {
+                int val = heap.poll() - 1;
+                if (val > 0) {
+                    q.offer(new int[] {val, time + n});
+                }
+            }
+
+            if (!q.isEmpty() && q.peek()[1] == time) {
+                int[] val = q.poll();
+                if (val[0] > 0) {
+                    heap.offer(val[0]);
+                }
+            }
+        }
+        return time;
+    }
+}
